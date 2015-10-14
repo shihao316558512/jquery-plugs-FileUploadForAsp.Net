@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery.fileupload.css">
+    <script src="//cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <script src="js/vendor/jquery.ui.widget.js"></script>
+    <script src="js/jquery.iframe-transport.js"></script>
+    <script src="js/jquery.fileupload.js"></script>
+    <script src="js/jquery.fileupload-process.js"></script>
+    <script src="js/jquery.fileupload-validate.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var url = '/Handler1.ashx?folder=/File/';
+            $('#fileupload').fileupload({
+                url: url,
+                dataType: 'json',
+                //如果有格式需求，可把里面 的 gif|jpe?g|png  替换成相应格式的文件
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
+            }).on('fileuploaddone', function (e, data) {
+                //成功：handler中返回 json对象
+                //这里的 result 为你再handler中 返回的 json对象
+                alert(data.result.name);
+            }).on('fileuploadfail', function (e, data) {
+                //失败： 如果handler没有 返回 对象，则 会执行 这个  函数
+                var file = data.files[0];
+                alert(file.name);
+            }).on('fileuploadprocessalways', function (e, data) {
+                //格式判断
+                //1.引用上面的paocess.js   validate.js
+                //2.如果格式不正确，执行该函数
+                var index = data.index, file = data.files[index];
+                if (file.error) {
+                    alert(file.name);
+                    alert(file.error);   //error信息在 validate.js中，可以自己修改
+                }
+            });
+
+        })
+</script>
+</head>
+<body>
+    <pre> 
+           1.input控件如果 不加 multiple属性，则为单文件上传 
+           2.bootstrap.min.css    bootstrap.min.js 
+           这个样式 是bootstrap的样式，如果有需求再引用，主要是为了好看
+           3.详细的返回方法见代码里面
+           </pre>
+    <span class="btn btn-success fileinput-button"><i class="glyphicon glyphicon-plus"></i>
+        <span>Select files...</span>
+        <input id="fileupload" type="file" name="files[]" multiple="multiple">
+    </span>
+    <div id="files" class="files">
+    </div>
+</body>
+</html>
